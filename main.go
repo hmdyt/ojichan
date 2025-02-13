@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -36,6 +38,8 @@ func init() {
 }
 
 func main() {
+	go startHttpServer()
+
 	dg, err := discordgo.New("Bot " + TOKEN)
 	if err != nil {
 		log.Fatalf("セッションの作成に失敗しました: %v", err)
@@ -94,4 +98,11 @@ func getName(u *discordgo.User) string {
 	default:
 		return "名無し"
 	}
+}
+
+func startHttpServer() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, World!")
+	})
+	http.ListenAndServe(":8080", nil)
 }

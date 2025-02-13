@@ -45,8 +45,8 @@ resource "sakuracloud_apprun_application" "ojichan" {
     }
     probe {
       http_get {
-        path = "/health"
-        port = 80
+        path = "/"
+        port = 8080
       }
     }
   }
@@ -66,4 +66,12 @@ output "OJICHAN_EMOJI_NUM" {
 
 output "OJICHAN_UNCTUATION_LEVEL" {
   value = var.OJICHAN_UNCTUATION_LEVEL
+}
+
+data "sakuracloud_apprun_application" "ojichan" {
+  name = sakuracloud_apprun_application.ojichan.name
+}
+
+output "public_link" {
+  value = data.sakuracloud_apprun_application.ojichan.public_url
 }
