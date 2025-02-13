@@ -15,9 +15,9 @@ import (
 )
 
 var (
-	TOKEN      string
-	CHANNEL_ID string
-	MYSELF_URL string
+	TOKEN           string
+	CHANNEL_ID_LIST []string
+	MYSELF_URL      string
 
 	REACTION_WORDS = []string{
 		"おじ",
@@ -33,9 +33,12 @@ func init() {
 		log.Fatal("環墿変数 OJICHAN_DISCORD_TOKEN が設定されていません")
 	}
 
-	CHANNEL_ID = os.Getenv("OJICHAN_DISCORD_CHANNEL_ID")
-	if CHANNEL_ID == "" {
+	if channel_ids_str := os.Getenv("OJICHAN_DISCORD_CHANNEL_ID"); channel_ids_str == "" {
 		log.Fatal("環境変数 OJICHAN_DISCORD_CHANNEL_ID が設定されていません")
+	} else if channel_ids := strings.Split(channel_ids_str, ","); len(channel_ids) == 0 {
+		log.Fatal("環境変数 OJICHAN_DISCORD_CHANNEL_ID が不正です")
+	} else {
+		CHANNEL_ID_LIST = channel_ids
 	}
 
 	MYSELF_URL = os.Getenv("OJICHAN_MYSELF_URL")
@@ -72,7 +75,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.ChannelID != CHANNEL_ID {
+	if !isValidChannel(m.ChannelID) {
 		return
 	}
 
@@ -81,6 +84,15 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		ojiMessage := ojichan.Say(getName(m.Author))
 		s.ChannelMessageSend(m.ChannelID, ojiMessage)
 	}
+}
+
+func isValidChannel(channelID string) bool {
+	for _, id := range CHANNEL_ID_LIST {
+		if channelID == id {
+			return true
+		}
+	}
+	return false
 }
 
 func isIncludeReactionWord(content string) bool {
