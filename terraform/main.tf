@@ -1,0 +1,69 @@
+terraform {
+  required_providers {
+    sakuracloud = {
+      source  = "sacloud/sakuracloud"
+      version = "2.26.0"
+    }
+  }
+}
+
+provider "sakuracloud" {}
+
+resource "sakuracloud_apprun_application" "ojichan" {
+  name            = "ojichan"
+  timeout_seconds = 60
+  port            = 80
+  min_scale       = 0
+  max_scale       = 1
+  components {
+    name       = "ojichan"
+    max_cpu    = "1"
+    max_memory = "512Mi"
+    deploy_source {
+      container_registry {
+        image    = "hmdyt.sakuracr.jp/ojichan:latest"
+        server   = "hmdyt.sakuracr.jp"
+        username = var.SAKURACLOUD_APPRUN_USER
+        password = var.SAKURACLOUD_APPRUN_PASSWORD
+      }
+    }
+    env {
+      key   = "OJICHAN_DISCORD_TOKEN"
+      value = var.OJICHAN_DISCORD_TOKEN
+    }
+    env {
+      key   = "OJICHAN_DISCORD_CHANNEL_ID"
+      value = var.OJICHAN_DISCORD_CHANNEL_ID
+    }
+    env {
+      key   = "OJICHAN_EMOJI_NUM"
+      value = var.OJICHAN_EMOJI_NUM
+    }
+    env {
+      key   = "OJICHAN_UNCTUATION_LEVEL"
+      value = var.OJICHAN_UNCTUATION_LEVEL
+    }
+    probe {
+      http_get {
+        path = "/health"
+        port = 80
+      }
+    }
+  }
+  traffics {
+    version_index = 0
+    percent       = 100
+  }
+}
+
+output "OJICHAN_DISCORD_CHANNEL_ID" {
+  value = var.OJICHAN_DISCORD_CHANNEL_ID
+}
+
+output "OJICHAN_EMOJI_NUM" {
+  value = var.OJICHAN_EMOJI_NUM
+}
+
+output "OJICHAN_UNCTUATION_LEVEL" {
+  value = var.OJICHAN_UNCTUATION_LEVEL
+}

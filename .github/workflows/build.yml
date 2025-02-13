@@ -18,15 +18,15 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: hmdyt.sakuracr.jp
+          username: ${{ secrets.SAKURACLOUD_APPRUN_USER }}
+          password: ${{ secrets.SAKURACLOUD_APPRUN_PASSWORD }}
       - name: Build Docker Image
         run: |
-          docker build --tag ghcr.io/$GITHUB_ACTOR/ojichan:latest \
-          --tag ghcr.io/$GITHUB_ACTOR/ojichan:$(echo $GITHUB_SHA | head -c7) \
+          docker build --tag hmdyt.sakuracr.jp/ojichan:latest \
+          --tag hmdyt.sakuracr.jp/ojichan:$(echo $GITHUB_SHA | head -c7) \
           .
       - name: Push Docker Image
         run: |
-          docker push ghcr.io/$GITHUB_ACTOR/ojichan:latest
-          docker push ghcr.io/$GITHUB_ACTOR/ojichan:$(echo $GITHUB_SHA | head -c7)
+          docker push hmdyt.sakuracr.jp/ojichan:latest
+          docker push hmdyt.sakuracr.jp/ojichan:$(echo $GITHUB_SHA | head -c7)

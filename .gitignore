@@ -1,1 +1,4 @@
 .env
+terraform/.terraform/providers/registry.terraform.io/sacloud/sakuracloud/2.26.0/darwin_arm64
+terraform/terraform.tfstate.backup
+terraform/terraform.tfstate
