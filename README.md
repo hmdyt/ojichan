@@ -1,0 +1,5 @@
+## 環境変数
+- OJICHAN_DISCORD_TOKEN: botのtoken
+- OJICHAN_DISCORD_CHANNEL_ID: 稼働させる channel id
+- OJICHAN_EMOJI_NUM: 絵文字の最大連続数
+- OJICHAN_UNCTUATION_LEVEL: 句読点レベル
