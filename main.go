@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/hmdyt/ojichan/ojichan"
@@ -16,6 +17,7 @@ import (
 var (
 	TOKEN      string
 	CHANNEL_ID string
+	MYSELF_URL string
 
 	REACTION_WORDS = []string{
 		"おじ",
@@ -35,10 +37,13 @@ func init() {
 	if CHANNEL_ID == "" {
 		log.Fatal("環境変数 OJICHAN_DISCORD_CHANNEL_ID が設定されていません")
 	}
+
+	MYSELF_URL = os.Getenv("OJICHAN_MYSELF_URL")
 }
 
 func main() {
 	go startHttpServer()
+	go awake()
 
 	dg, err := discordgo.New("Bot " + TOKEN)
 	if err != nil {
@@ -105,4 +110,11 @@ func startHttpServer() {
 		fmt.Fprintf(w, "Hello, World!")
 	})
 	http.ListenAndServe(":8080", nil)
+}
+
+func awake() {
+	for {
+		http.Get(MYSELF_URL)
+		time.Sleep(1 * time.Minute)
+	}
 }

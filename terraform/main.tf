@@ -12,7 +12,7 @@ provider "sakuracloud" {}
 resource "sakuracloud_apprun_application" "ojichan" {
   name            = "ojichan"
   timeout_seconds = 60
-  port            = 80
+  port            = 8080
   min_scale       = 0
   max_scale       = 1
   components {
@@ -42,6 +42,10 @@ resource "sakuracloud_apprun_application" "ojichan" {
     env {
       key   = "OJICHAN_UNCTUATION_LEVEL"
       value = var.OJICHAN_UNCTUATION_LEVEL
+    }
+    env {
+      key   = "OJICHAN_MYSELF_URL"
+      value = "https://app-64a2d214-23c2-4010-8041-a986b4e4e27f.ingress.apprun.sakura.ne.jp"
     }
     probe {
       http_get {
